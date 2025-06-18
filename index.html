@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Product Listing</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f7f7f7;
+    }
+
+    nav {
+      position: sticky;
+      top: 0;
+      background-color: rgb(169, 99, 236);
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      z-index: 1000;
+    }
+
+    .logo {
+      height: 60px;
+      width: 60px;
+      border-radius: 50%;
+    }
+
+    nav ul {
+      display: flex;
+      gap: 20px;
+      list-style: none;
+      color: white;
+      font-weight: bold;
+    }
+
+    nav ul li {
+      cursor: pointer;
+      transition: color 0.2s ease;
+    }
+
+    nav ul li:hover {
+      color: #ddd;
+    }
+
+    nav .actions {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .cart {
+      height: 35px;
+      width: 35px;
+      cursor: pointer;
+    }
+
+    .login {
+      height: 35px;
+      padding: 0 15px;
+      border-radius: 8px;
+      color: white;
+      background-color: coral;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .product-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      padding: 30px;
+      justify-items: center;
+    }
+
+    .card {
+      background-color: antiquewhite;
+      border-radius: 20px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      transition: transform 0.2s ease-in-out;
+      width: 100%;
+      max-width: 300px;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+    }
+
+    .card img {
+      width: 100%;
+      max-width: 150px;
+      height: auto;
+      border-radius: 10px;
+      object-fit: cover;
+    }
+
+    .card h3 {
+      font-size: 24px;
+      color: crimson;
+      margin-top: 10px;
+    }
+
+    .price {
+      color: chocolate;
+      font-weight: bold;
+      margin: 10px 0;
+    }
+
+    .addtocart {
+      height: 40px;
+      width: 100%;
+      background-color: orangered;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background-color 0.3s ease;
+    }
+
+    .addtocart:hover {
+      background-color: darkorange;
+    }
+
+    @media (max-width: 768px) {
+      nav {
+        flex-direction: column;
+        align-items: flex-start;
+        height: auto;
+        padding: 10px;
+      }
+
+      nav ul {
+        flex-wrap: wrap;
+        margin-top: 10px;
+        gap: 10px;
+      }
+
+      nav .actions {
+        margin-top: 10px;
+        width: 100%;
+        justify-content: flex-end;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <img src="https://marketplace.canva.com/EAExEhIzpoM/1/0/800w/canva-blue-minimal-electronics-modern-logo-QWfVOfs-ZhQ.jpg" alt="Logo" class="logo" />
+    <ul>
+      <li>Home</li>
+      <li>About Us</li>
+      <li>Top Deals</li>
+      <li>Help</li>
+    </ul>
+    <div class="actions">
+      <a href="cart.html"><img src="shopping-cart.png" alt="Cart" class="cart" /></a>
+      <button class="login">Login</button>
+    </div>
+  </nav>
+
+  <div class="product-container" id="product-container"></div>
+
+  <script>
+    const products = [
+    { id: 1, name: "Canon DSLR", price: 1600, image: "https://i5.walmartimages.com/asr/95e980d9-0bdb-41ac-8877-8b293360a7b1_1.0d0b555285b2159a778089ab4c060be6.jpeg" },
+    { id: 2, name: "Macbook", price: 2000, image: "https://techcrunch.com/wp-content/uploads/2022/06/CMC_1384.jpg" },
+    { id: 3, name: "JBL Speakers", price: 600, image: "https://th.bing.com/th/id/OIP.g-IXaRH2deMRDkasq9BDFQHaHa?cb=iwc2&rs=1&pid=ImgDetMain" },
+    { id: 4, name: "Fitbit Versa", price: 300, image: "https://www.smartwatchspex.com/wp-content/uploads/2018/03/Fitbit-Versa-Smartwatch.png" },
+    { id: 5, name: "iPhone 11", price: 500, image: "https://phonesdata.com/files/models/Apple--iPhone-11-134.png" },
+    { id: 8, name: "Sony WH-1000XM4", price: 350, image: "https://m.media-amazon.com/images/I/71o8Q5XJS5L._SL1500_.jpg" },
+    { id: 10, name: "Nintendo Switch", price: 299, image: "https://m.media-amazon.com/images/I/61-PblYntsL._SL1500_.jpg" },
+    
+  ];
+
+
+    function renderproducts() {
+      const container = document.getElementById("product-container");
+      container.innerHTML = "";
+      products.forEach(product => {
+        const card = document.createElement("div");
+        card.className = "card";
+        card.innerHTML = `
+          <img src="${product.image}" alt="${product.name}" />
+          <h3>${product.name}</h3>
+          <p class="price">$${product.price}</p>
+          <button class="addtocart" onclick="addtocart(${product.id})">Add to cart</button>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function addtocart(productId) {
+      const product = products.find(p => p.id === productId);
+      let cart = JSON.parse(localStorage.getItem("cart")) || [];
+      const existing = cart.find(item => item.id === productId);
+
+      if (existing) {
+        existing.quantity += 1;
+      } else {
+        cart.push({ ...product, quantity: 1 });
+      }
+
+      localStorage.setItem("cart", JSON.stringify(cart));
+      alert(`Product "${product.name}" added to cart`);
+    }
+
+    renderproducts();
+  </script>
+</body>
+</html>

@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Your Cart</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      padding: 20px;
+      min-height: 100vh;
+    }
+
+    a {
+      text-decoration: none;
+      color: #333;
+      margin-bottom: 10px;
+      display: inline-block;
+    }
+
+    h2 {
+      margin: 20px 0;
+      color: #333;
+    }
+
+    .cart-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+    }
+
+    .item {
+      background-color: #fff5e6;
+      border-radius: 20px;
+      padding: 15px;
+      width: 300px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      transition: transform 0.2s ease-in-out;
+    }
+
+    .item:hover {
+      transform: translateY(-4px);
+    }
+
+    .item img {
+      width: 100%;
+      max-width: 150px;
+      border-radius: 10px;
+      object-fit: cover;
+    }
+
+    .item h4 {
+      font-size: 1.4rem;
+      color: crimson;
+      margin: 10px 0 5px;
+    }
+
+    .item .price {
+      font-size: 1.1rem;
+      color: #333;
+      margin-bottom: 10px;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .buttons button {
+      height: 30px;
+      width: 30px;
+      border-radius: 50%;
+      color: white;
+      font-size: 1rem;
+      font-weight: bold;
+      background-color: brown;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn {
+      padding: 8px 16px;
+      background-color: coral;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .btn:hover {
+      background-color: #ff7f50;
+    }
+
+    #total {
+      position: sticky;
+      bottom: 10px;
+      left: 10px;
+      background-color: brown;
+      color: white;
+      padding: 15px 20px;
+      border-radius: 15px;
+      font-size: 1.2rem;
+      margin-top: 20px;
+      text-align: center;
+      width: fit-content;
+    }
+
+    @media (max-width: 768px) {
+      .item {
+        width: 100%;
+        max-width: 90vw;
+      }
+
+      .item img {
+        max-width: 120px;
+      }
+
+      .btn {
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 10px;
+      }
+
+      .buttons button {
+        width: 25px;
+        height: 25px;
+        font-size: 0.9rem;
+      }
+
+      .btn {
+        padding: 6px 12px;
+      }
+
+      #total {
+        font-size: 1rem;
+        padding: 10px 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a href="index.html">&larr; Back Home</a>
+  <h2>Your Cart</h2>
+  <div class="cart-container" id="cart-container"></div>
+  <div class="total" id="total"></div>
+
+  <script>
+    function deletefromcart(productId) {
+      const cart = JSON.parse(localStorage.getItem("cart")) || [];
+      const index = cart.findIndex(p => p.id === productId);
+      if (index > -1) cart.splice(index, 1);
+      localStorage.setItem("cart", JSON.stringify(cart));
+      loadcart();
+    }
+
+    function decreasequantity(productId) {
+      let cart = JSON.parse(localStorage.getItem("cart")) || [];
+      const item = cart.find(p => p.id === productId);
+      if (item) {
+        item.quantity > 1 ? item.quantity-- : cart.splice(cart.indexOf(item), 1);
+      }
+      localStorage.setItem("cart", JSON.stringify(cart));
+      loadcart();
+    }
+
+    function increasequantity(productId) {
+      let cart = JSON.parse(localStorage.getItem("cart")) || [];
+      const item = cart.find(p => p.id === productId);
+      if (item) item.quantity++;
+      localStorage.setItem("cart", JSON.stringify(cart));
+      loadcart();
+    }
+
+    function loadcart() {
+      const cart = JSON.parse(localStorage.getItem("cart")) || [];
+      const container = document.getElementById("cart-container");
+      const totalDiv = document.getElementById("total");
+      if (cart.length === 0) {
+        container.innerHTML = "<p>Your cart is empty.</p>";
+        totalDiv.innerHTML = "";
+        return;
+      }
+
+      let total = 0;
+      container.innerHTML = "";
+      cart.forEach((item) => {
+        total += item.price * item.quantity;
+        const itemdiv = document.createElement("div");
+        itemdiv.className = "item";
+        itemdiv.innerHTML = `
+          <img src="${item.image}" alt="${item.name}" />
+          <div class="item-info">
+            <h4>${item.name}</h4>
+            <p class="price">$${(item.price * item.quantity).toFixed(2)}</p>
+            <div class="buttons">
+              <button onclick="decreasequantity(${item.id})">-</button>
+              <p class="quantity">${item.quantity}</p>
+              <button onclick="increasequantity(${item.id})">+</button>
+            </div>
+            <button class="btn" onclick="deletefromcart(${item.id})">Delete</button>
+          </div>`;
+        container.appendChild(itemdiv);
+      });
+
+      totalDiv.innerHTML = `Total: $${total.toFixed(2)}`;
+    }
+
+    loadcart();
+  </script>
+</body>
+</html>
